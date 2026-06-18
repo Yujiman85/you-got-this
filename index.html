@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You Got This — a random affirmation</title>
+  <meta name="description" content="A little reminder, picked at random, that you've got this.">
+  <!-- Emoji favicon (inline SVG data URI — no external request) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%AA%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --card-bg: #ffffff;
+      --ink: #1b1b2f;
+      --ink-soft: #4a4a68;
+      --accent: #312e81;       /* deep indigo — white text on this passes WCAG AA */
+      --accent-hover: #3f3aa0;
+      --focus: #ffd166;
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f857a6 100%);
+      background-size: 200% 200%;
+      animation: drift 18s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    @keyframes drift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    main {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      padding: clamp(28px, 6vw, 56px);
+      max-width: 620px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin: 0 0 18px;
+    }
+
+    .affirmation {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      line-height: 1.3;
+      font-weight: 700;
+      margin: 0 0 36px;
+      min-height: 2.6em;            /* reduces layout jump between affirmations */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .affirmation.fade {
+      animation: fadein 0.45s ease;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    button {
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      color: #ffffff;
+      background: var(--accent);
+      border: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-size: 1.05rem;
+      transition: background-color 0.2s ease, transform 0.05s ease;
+    }
+
+    button:hover { background: var(--accent-hover); }
+    button:active { transform: scale(0.98); }
+
+    /* Clear, visible keyboard focus indicator (WCAG 2.4.7) */
+    button:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    footer {
+      margin-top: 28px;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+
+    /* Screen-reader-only utility for the document heading */
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Honor users who prefer reduced motion (WCAG 2.3.3) */
+    @media (prefers-reduced-motion: reduce) {
+      body { animation: none; }
+      .affirmation.fade { animation: none; }
+      button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 class="visually-hidden">You Got This — random affirmations</h1>
+    <p class="kicker">A reminder for you</p>
+
+    <!-- aria-live announces a new affirmation to screen readers when the button is pressed -->
+    <p id="affirmation" class="affirmation" aria-live="polite" role="status"></p>
+
+    <button id="another" type="button">Give me another</button>
+
+    <footer>Refresh anytime — or tap the button. You've got this. 💪</footer>
+  </main>
+
+  <script>
+    const affirmations = [
+      "You've got this.",
+      "You are capable of amazing things.",
+      "Progress, not perfection.",
+      "You are exactly where you need to be right now.",
+      "Your best is enough.",
+      "You've survived 100% of your hardest days.",
+      "Small steps still move you forward.",
+      "You are stronger than you think.",
+      "It's okay to take it one moment at a time.",
+      "You bring something to the world no one else can.",
+      "Today is a fresh start.",
+      "You are allowed to be a work in progress.",
+      "Your effort matters, even when it goes unseen.",
+      "You can do hard things.",
+      "Be proud of how far you've come.",
+      "You deserve the same kindness you give others.",
+      "Mistakes mean you're trying — keep going.",
+      "You are worthy of good things.",
+      "Breathe. You're doing better than you think.",
+      "Your potential is limitless.",
+      "You don't have to have it all figured out today.",
+      "You are enough, exactly as you are.",
+      "Trust yourself — you've made it this far.",
+      "Every day is a chance to begin again.",
+      "You matter more than you know.",
+      "Courage doesn't always roar; sometimes it's just showing up.",
+      "You are resilient, resourceful, and ready.",
+      "Let today be enough.",
+      "You are growing, even when it doesn't feel like it.",
+      "Good things are coming — keep going."
+    ];
+
+    const el = document.getElementById("affirmation");
+    const button = document.getElementById("another");
+    const STORAGE_KEY = "lastAffirmationIndex";
+
+    // Read the last shown index so we don't repeat it on the next reload either.
+    let lastIndex = -1;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored !== null) lastIndex = parseInt(stored, 10);
+    } catch (e) { /* localStorage may be unavailable; fall back to in-memory only */ }
+
+    function pickIndex() {
+      if (affirmations.length <= 1) return 0;
+      let i;
+      do {
+        i = Math.floor(Math.random() * affirmations.length);
+      } while (i === lastIndex);   // no-repeat: never the same one twice in a row
+      return i;
+    }
+
+    function show(animate) {
+      const i = pickIndex();
+      lastIndex = i;
+      try { localStorage.setItem(STORAGE_KEY, String(i)); } catch (e) { /* ignore */ }
+
+      el.textContent = affirmations[i];
+      if (animate) {
+        el.classList.remove("fade");
+        void el.offsetWidth;        // restart the CSS animation
+        el.classList.add("fade");
+      }
+    }
+
+    button.addEventListener("click", () => show(true));
+
+    // First affirmation on load.
+    show(false);
+  </script>
+</body>
+</html>
