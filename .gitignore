@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+# oh-my-claudecode tooling state (local only — never publish)
+.omc/
+
 # Editor cruft
 .vscode/
 .idea/

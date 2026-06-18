@@ -9,12 +9,16 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%AA%3C/text%3E%3C/svg%3E">
   <style>
     :root {
-      --card-bg: #ffffff;
-      --ink: #1b1b2f;
-      --ink-soft: #4a4a68;
-      --accent: #312e81;       /* deep indigo — white text on this passes WCAG AA */
-      --accent-hover: #3f3aa0;
-      --focus: #ffd166;
+      /* "Serene Nature" palette — botanical greens + misty sky */
+      --bg-from: #a6cbd3;      /* misty sky */
+      --bg-to:   #96ab88;      /* sage green */
+      --card-bg: #fdf1db;      /* warm cream */
+      --card-border: #dfd5c6;  /* soft taupe edge */
+      --ink: #597b60;          /* forest green — affirmation is large text, passes AA (>3:1) */
+      --ink-soft: #4f7059;     /* deeper forest — small label text, passes AA (~5:1 on cream) */
+      --accent: #597b60;       /* forest green button — white text passes AA (~4.7:1) */
+      --accent-hover: #4a6a52; /* darker forest on hover */
+      --focus: #4f8fa8;        /* teal focus ring */
       --radius: 20px;
     }
 
@@ -26,9 +30,10 @@
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       color: var(--ink);
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f857a6 100%);
-      background-size: 200% 200%;
-      animation: drift 18s ease infinite;
+      /* Serene gradient: misty sky settling into sage */
+      background: linear-gradient(160deg, var(--bg-from) 0%, var(--bg-to) 100%);
+      background-size: 180% 180%;
+      animation: drift 32s ease infinite;   /* slow, gentle */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -42,10 +47,26 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Subtle botanical leaf-sprig texture behind the card.
+       Fixed layer above the gradient but below the content card. */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2780%27%20viewBox%3D%270%200%2080%2080%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%271.3%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20transform%3D%27rotate%28-22%2040%2040%29%27%3E%3Cpath%20d%3D%27M40%2058%20C30%2048%2030%2030%2040%2020%20C50%2030%2050%2048%2040%2058%20Z%27%20stroke-width%3D%271.8%27%2F%3E%3Cpath%20d%3D%27M40%2056%20L40%2022%27%2F%3E%3Cpath%20d%3D%27M40%2048%20L33.5%2042%27%2F%3E%3Cpath%20d%3D%27M40%2048%20L46.5%2042%27%2F%3E%3Cpath%20d%3D%27M40%2040%20L32.5%2033%27%2F%3E%3Cpath%20d%3D%27M40%2040%20L47.5%2033%27%2F%3E%3Cpath%20d%3D%27M40%2032%20L34%2027%27%2F%3E%3Cpath%20d%3D%27M40%2032%20L46%2027%27%2F%3E%3Cpath%20d%3D%27M40%2058%20L40%2065%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+      background-size: 80px 80px;
+      opacity: 0.32;       /* a whisper of foliage, not a focal point */
+    }
+
     main {
+      position: relative;
+      z-index: 1;          /* sit above the pattern layer */
       background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 14px 40px rgba(55, 80, 65, 0.18);
       padding: clamp(28px, 6vw, 56px);
       max-width: 620px;
       width: 100%;
@@ -73,7 +94,7 @@
     }
 
     .affirmation.fade {
-      animation: fadein 0.45s ease;
+      animation: fadein 0.5s ease;
     }
 
     @keyframes fadein {
@@ -96,17 +117,12 @@
 
     button:hover { background: var(--accent-hover); }
     button:active { transform: scale(0.98); }
+    button[disabled] { opacity: 0.5; cursor: default; }
 
     /* Clear, visible keyboard focus indicator (WCAG 2.4.7) */
     button:focus-visible {
       outline: 3px solid var(--focus);
       outline-offset: 3px;
-    }
-
-    footer {
-      margin-top: 28px;
-      font-size: 0.85rem;
-      color: var(--ink-soft);
     }
 
     /* Screen-reader-only utility for the document heading */
@@ -137,47 +153,14 @@
     <p id="affirmation" class="affirmation" aria-live="polite" role="status"></p>
 
     <button id="another" type="button">Give me another</button>
-
-    <footer>Refresh anytime — or tap the button. You've got this. 💪</footer>
   </main>
 
   <script>
-    const affirmations = [
-      "You've got this.",
-      "You are capable of amazing things.",
-      "Progress, not perfection.",
-      "You are exactly where you need to be right now.",
-      "Your best is enough.",
-      "You've survived 100% of your hardest days.",
-      "Small steps still move you forward.",
-      "You are stronger than you think.",
-      "It's okay to take it one moment at a time.",
-      "You bring something to the world no one else can.",
-      "Today is a fresh start.",
-      "You are allowed to be a work in progress.",
-      "Your effort matters, even when it goes unseen.",
-      "You can do hard things.",
-      "Be proud of how far you've come.",
-      "You deserve the same kindness you give others.",
-      "Mistakes mean you're trying — keep going.",
-      "You are worthy of good things.",
-      "Breathe. You're doing better than you think.",
-      "Your potential is limitless.",
-      "You don't have to have it all figured out today.",
-      "You are enough, exactly as you are.",
-      "Trust yourself — you've made it this far.",
-      "Every day is a chance to begin again.",
-      "You matter more than you know.",
-      "Courage doesn't always roar; sometimes it's just showing up.",
-      "You are resilient, resourceful, and ready.",
-      "Let today be enough.",
-      "You are growing, even when it doesn't feel like it.",
-      "Good things are coming — keep going."
-    ];
-
     const el = document.getElementById("affirmation");
     const button = document.getElementById("another");
     const STORAGE_KEY = "lastAffirmationIndex";
+
+    let affirmations = [];
 
     // Read the last shown index so we don't repeat it on the next reload either.
     let lastIndex = -1;
@@ -209,9 +192,25 @@
     }
 
     button.addEventListener("click", () => show(true));
+    button.disabled = true;        // re-enabled once affirmations have loaded
 
-    // First affirmation on load.
-    show(false);
+    // Affirmations live in affirmations.json so the list is easy to edit
+    // without touching code. (Loaded over HTTP on GitHub Pages.)
+    fetch("affirmations.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then((data) => {
+        affirmations = Array.isArray(data) ? data : (data.affirmations || []);
+        if (!affirmations.length) throw new Error("No affirmations found");
+        button.disabled = false;
+        show(false);
+      })
+      .catch((err) => {
+        console.error("Could not load affirmations.json:", err);
+        el.textContent = "You've got this.";   // graceful fallback
+      });
   </script>
 </body>
 </html>
